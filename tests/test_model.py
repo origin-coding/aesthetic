@@ -2,7 +2,7 @@ import unittest
 
 import torch
 
-from models.model import ChannelAttention, SpacialAttention, CBAM
+from models import ChannelAttention, SpacialAttention, CBAM
 
 
 class TestModelOutputShape(unittest.TestCase):
