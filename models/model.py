@@ -1,0 +1,57 @@
+import torch
+import torch.nn as nn
+
+
+class ChannelAttention(nn.Module):
+    def __init__(self, channels: int, reduce_ratio: int = 16, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.avg_pool = nn.AdaptiveAvgPool2d(output_size=None)
+        self.max_pool = nn.AdaptiveMaxPool2d(output_size=None)
+
+        self.shared_MLP = nn.Sequential(
+            nn.Conv2d(channels, channels // reduce_ratio, 1, bias=False),
+            nn.ReLU(),
+            nn.Conv2d(channels // reduce_ratio, channels, 1, bias=False)
+        )
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        avg_out = self.shared_MLP(self.avg_pool(x))
+        max_out = self.shared_MLP(self.max_pool(x))
+        return self.sigmoid(avg_out + max_out)
+
+
+class SpacialAttention(nn.Module):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.conv2d = nn.Conv2d(in_channels=2, out_channels=1, kernel_size=7, padding=3)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        avg_out = torch.mean(x, dim=1, keepdim=True)
+        max_out, _ = torch.max(x, dim=1, keepdim=True)
+        out = torch.cat((avg_out, max_out), dim=1)
+
+        return self.sigmoid(self.conv2d(out))
+
+
+class CBAM(nn.Module):
+    def __init__(self, channels: int, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.channel_attention = ChannelAttention(channels)
+        self.spacial_attention = SpacialAttention()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        out = self.channel_attention(x) * x
+        out = self.spacial_attention(out) * out
+        return out
+
+
+class MTAesthetic(nn.Module):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.layer1 = nn.Linear(1024, 10, bias=True)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.layer1(x)
+        return x
