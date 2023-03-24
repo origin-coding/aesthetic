@@ -5,8 +5,8 @@ import torch.nn as nn
 class ChannelAttention(nn.Module):
     def __init__(self, channels: int, reduce_ratio: int = 16, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.avg_pool = nn.AdaptiveAvgPool2d(output_size=None)
-        self.max_pool = nn.AdaptiveMaxPool2d(output_size=None)
+        self.avg_pool = nn.AdaptiveAvgPool2d(output_size=(None, None))
+        self.max_pool = nn.AdaptiveMaxPool2d(output_size=(None, None))
 
         self.shared_MLP = nn.Sequential(
             nn.Conv2d(channels, channels // reduce_ratio, 1, bias=False),
