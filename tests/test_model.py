@@ -34,7 +34,3 @@ class TestModelOutputShape(unittest.TestCase):
             output_tensor.shape,
             torch.Size((5, 32, 256, 256))
         )
-
-
-if __name__ == '__main__':
-    unittest.main()
