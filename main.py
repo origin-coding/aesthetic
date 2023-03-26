@@ -1,6 +1,7 @@
 import click
 
 from tests import test_main
+from ui import ui_main
 
 
 @click.group()
@@ -17,6 +18,12 @@ def main(_: click.Context):
 def test(filename: str, description: str):
     """进行自动化测试，并将测试报告输出到outputs文件夹中"""
     test_main(filename, description)
+
+
+@main.command()
+def ui():
+    """启动应用界面"""
+    ui_main()
 
 
 if __name__ == '__main__':

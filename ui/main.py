@@ -6,7 +6,7 @@ from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
 
-def main():
+def ui_main():
     print(PySide6.__version__)
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
@@ -15,7 +15,3 @@ def main():
     if not engine.rootObjects():
         sys.exit(-1)
     sys.exit(app.exec())
-
-
-if __name__ == '__main__':
-    main()
