@@ -1,3 +1,3 @@
-from .model import ChannelAttention, SpacialAttention, CBAM, MTAesthetic
+from .model import ChannelAttention, SpacialAttention, CBAM, MTAesthetic, SharedLayer
 
-__all__ = ["ChannelAttention", "SpacialAttention", "CBAM", "MTAesthetic"]
+__all__ = ["ChannelAttention", "SpacialAttention", "CBAM", "MTAesthetic", "SharedLayer"]
