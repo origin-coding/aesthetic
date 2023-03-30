@@ -1,4 +1,3 @@
-from enum import Enum
 from pathlib import Path
 
 import torchvision.transforms as transforms
@@ -15,13 +14,6 @@ image_transforms = transforms.Compose([
     transforms.RandomCrop(256),
     transforms.ToTensor(),
 ])
-
-
-# 图像美学评价的任务
-class Task(Enum):
-    BINARY = "bin"  # 图像是否具有美学特征的二分类任务
-    SCORE = "score"  # 图像美学评价的具体分值
-    ATTRIBUTE = "attr"  # 图像美学具体特征的指标
 
 
 class TensorData(BaseModel):
