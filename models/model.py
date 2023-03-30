@@ -35,11 +35,11 @@ class SharedLayer(nn.Module):
 
 
 class MTAesthetic(nn.Module):
-    def __init__(self, channels: int, shared_layer_kernel_size: int) -> None:
+    def __init__(self, channels: int, kernel_size: int) -> None:
         super().__init__()
 
         # 共享参数层，用于学习图像的细节特征
-        self.shared_layer = SharedLayer(channels=channels, kernel_size=shared_layer_kernel_size)
+        self.shared_layer = SharedLayer(channels=channels, kernel_size=kernel_size)
 
         # 三个多任务学习模块
         self.task_binary = nn.Sequential(
