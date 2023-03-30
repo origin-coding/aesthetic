@@ -1,57 +1,8 @@
 import torch
 import torch.nn as nn
 
-from common import Task
-
-
-class ChannelAttention(nn.Module):
-    def __init__(self, channels: int, reduce_ratio: int = 16, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.avg_pool = nn.AdaptiveAvgPool2d(output_size=(None, None))
-        self.max_pool = nn.AdaptiveMaxPool2d(output_size=(None, None))
-
-        self.shared_MLP = nn.Sequential(
-            nn.Conv2d(channels, channels // reduce_ratio, 1, bias=False),
-            nn.ReLU(),
-            nn.Conv2d(channels // reduce_ratio, channels, 1, bias=False)
-        )
-        self.sigmoid = nn.Sigmoid()
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        avg_out = self.shared_MLP(self.avg_pool(x))
-        max_out = self.shared_MLP(self.max_pool(x))
-        return self.sigmoid(avg_out + max_out)
-
-
-class SpacialAttention(nn.Module):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.conv2d = nn.Conv2d(in_channels=2, out_channels=1, kernel_size=7, padding=3)
-        self.sigmoid = nn.Sigmoid()
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        avg_out = torch.mean(x, dim=1, keepdim=True)
-        max_out, _ = torch.max(x, dim=1, keepdim=True)
-        out = torch.cat((avg_out, max_out), dim=1)
-
-        return self.sigmoid(self.conv2d(out))
-
-
-class CBAM(nn.Module):
-    def __init__(self, channels: int = 1024, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.channel_attention = ChannelAttention(channels)
-        self.spacial_attention = SpacialAttention()
-        self.activation = nn.Sequential(
-            nn.BatchNorm2d(num_features=channels),
-            nn.ReLU()
-        )
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        out = self.channel_attention(x) * x
-        out = self.spacial_attention(out) * out
-        out = self.activation(out)
-        return out
+from common import TensorData
+from .cbam import CBAM
 
 
 class SharedLayer(nn.Module):
@@ -116,14 +67,20 @@ class MTAesthetic(nn.Module):
             nn.Linear(in_features=1024, out_features=11)
         )
 
-    def forward(self, x: torch.Tensor, task: Task) -> torch.Tensor:
-        out = self.shared_layer(x)
+    def forward(self, input_tensors: TensorData) -> TensorData:
+        # 首先获取输入
+        input_binary = input_tensors.binary
+        input_score = input_tensors.score
+        input_attribute = input_tensors.attribute
 
-        if task == Task.BINARY:
-            out = self.task_binary(out)
-        elif task == Task.SCORE:
-            out = self.task_score(out)
-        elif task == Task.ATTRIBUTE:
-            out = self.task_attribute(out)
+        # 针对三个子任务分别进行输出
+        output_binary = self.shared_layer(input_binary)
+        output_binary = self.task_binary(output_binary)
 
-        return out
+        output_score = self.shared_layer(input_score)
+        output_score = self.task_score(output_score)
+
+        output_attribute = self.shared_layer(input_attribute)
+        output_attribute = self.task_attribute(output_attribute)
+
+        return TensorData(binary=output_binary, score=output_score, attribute=output_attribute)
