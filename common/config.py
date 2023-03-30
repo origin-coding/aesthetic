@@ -18,7 +18,7 @@ class Configuration(BaseModel):
 
     optimizer: OptimizerConfiguration = OptimizerConfiguration.ADA
 
-    shared_layer_depth: int = 2
+    channels: int = 1024
     shared_layer_kernel_size: int = 3
 
 

@@ -36,8 +36,8 @@ class SpacialAttention(nn.Module):
 
 
 class CBAM(nn.Module):
-    def __init__(self, channels: int = 1024, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def __init__(self, channels: int) -> None:
+        super().__init__()
         self.channel_attention = ChannelAttention(channels)
         self.spacial_attention = SpacialAttention()
         self.activation = nn.Sequential(
