@@ -5,13 +5,13 @@ import torch
 from PIL import Image
 from torch.utils.data import Dataset
 
-from common import base_path, image_transforms
+from common import data_path, image_transforms
 
 
 class AADBDataset(Dataset):
     def __init__(self) -> None:
         super().__init__()
-        self.data = pd.read_csv(base_path / "data" / "aadb.csv")
+        self.data = pd.read_csv(data_path / "aadb.csv")
         self.transform = image_transforms
 
     def __len__(self) -> int:
@@ -21,7 +21,7 @@ class AADBDataset(Dataset):
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
         items: list = self.data.iloc[index].to_list()
 
-        image = Image.open(base_path / "data" / "aadb" / f"{items[0]}")
+        image = Image.open(data_path / "aadb" / f"{items[0]}")
         input_tensor = self.transform(image)
         label_tensor = torch.tensor(items[1:])
 

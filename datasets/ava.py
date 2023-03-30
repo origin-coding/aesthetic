@@ -5,13 +5,13 @@ import torch
 from PIL import Image
 from torch.utils.data import Dataset
 
-from common import base_path, image_transforms
+from common import data_path, image_transforms
 
 
 class AVADataset(Dataset):
     def __init__(self) -> None:
         super().__init__()
-        self.data = pd.read_csv(base_path / "data" / "ava.csv", dtype={"img_id": str, "score": float})
+        self.data = pd.read_csv(data_path / "ava.csv", dtype={"img_id": str, "score": float})
         self.transform = image_transforms
 
     def __len__(self) -> int:
@@ -21,7 +21,7 @@ class AVADataset(Dataset):
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
         items: list = self.data.iloc[index].to_list()
 
-        image = Image.open(base_path / "data" / "ava" / f"{items[1]}.jpg")
+        image = Image.open(data_path / "ava" / f"{items[1]}.jpg")
         input_tensor = self.transform(image)
         label_tensor = torch.tensor(items[2])
 
