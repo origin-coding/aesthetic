@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from torch import Tensor
 from torchvision import transforms as transforms
 
+# 图像预处理，尽量不改变图像的颜色、亮度、方位等特征，最大程度保留图像的美学信息
 image_transforms = transforms.Compose([
     transforms.Resize(512),
     transforms.RandomCrop(256),
