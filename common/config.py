@@ -6,7 +6,8 @@ from .common import base_path
 
 
 class OptimizerConfiguration(str, Enum):
-    ADA = "ada"
+    ADAM = "adam"
+    SGD = "sgd"
 
 
 class Configuration(BaseModel):
@@ -16,10 +17,9 @@ class Configuration(BaseModel):
 
     use_amp: bool  # 是否使用混合精度计算加速模型训练
 
-    optimizer: OptimizerConfiguration = OptimizerConfiguration.ADA
-
-    channels: int = 1024
-    shared_layer_kernel_size: int = 3
+    optimizer: OptimizerConfiguration = OptimizerConfiguration.ADAM
+    channels: int = 1024  # Attention模块的通道数，建议取值为1024或512
+    kernel_size: int = 3  # SharedLayer的卷积核大小，建议取值为3、5、7
 
 
 def setup_config() -> Configuration:
