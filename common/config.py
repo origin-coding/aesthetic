@@ -12,8 +12,10 @@ class OptimizerConfiguration(str, Enum):
 
 class Configuration(BaseModel):
     batch_size: int = 100
-    max_epochs: int = 200
     lr: float = 1e-4
+
+    max_epochs: int = 200
+    patience: int = 5  # 如果连续多个epoch结果不再变好，那么停止训练
 
     use_amp: bool  # 是否使用混合精度计算加速模型训练
 
