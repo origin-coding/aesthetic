@@ -1,0 +1,6 @@
+{
+  "batch_size": 100,
+  "max_epochs": 200,
+  "use_amp": true,
+  "lr": 0.0001
+}
