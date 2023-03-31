@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import BaseModel
+from pydantic import BaseModel as PydanticBaseModel
 from torch import Tensor
 from torchvision import transforms as transforms
 
@@ -10,6 +10,11 @@ image_transforms = transforms.Compose([
     transforms.RandomCrop(256),
     transforms.ToTensor(),
 ])
+
+
+class BaseModel(PydanticBaseModel):
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class TensorData(BaseModel):
