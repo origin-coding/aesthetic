@@ -1,9 +1,6 @@
-import torch
+from .config import setup_config
 
 
-def main():
-    print(torch.__version__)
-
-
-if __name__ == '__main__':
-    main()
+def train_main(config_filename: str):
+    config = setup_config(filename=config_filename)
+    print(config.optimizer.value)

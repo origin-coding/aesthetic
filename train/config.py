@@ -24,5 +24,5 @@ class Configuration(BaseModel):
     kernel_size: int = 3  # SharedLayer的卷积核大小，建议取值为3、5、7
 
 
-def setup_config() -> Configuration:
-    return Configuration.parse_file(path=base_path / "config.json", content_type="json")
+def setup_config(filename: str = "config.json") -> Configuration:
+    return Configuration.parse_file(path=base_path / filename, content_type="json")

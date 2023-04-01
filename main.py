@@ -1,6 +1,7 @@
 import click
 
 from tests import test_main
+from train import train_main
 from ui import ui_main
 
 
@@ -12,7 +13,7 @@ def main(_: click.Context):
 
 @main.command()
 @click.option("-f", "--filename", default="report.html", show_default=True,
-              help="测试报告的文件名")
+              help="测试报告的文件名，要求是HTML格式")
 @click.option("-d", "--description", default="自动测试报告", show_default=True,
               help="测试报告的描述信息")
 def test(filename: str, description: str):
@@ -24,6 +25,14 @@ def test(filename: str, description: str):
 def ui():
     """启动应用界面"""
     ui_main()
+
+
+@main.command()
+@click.option("-f", "--filename", default="config.json", show_default=True,
+              help="配置文件的文件名，要求是JSON格式")
+def train(filename: str):
+    """训练模型，并将结果和日志保存起来"""
+    train_main(filename)
 
 
 if __name__ == '__main__':
