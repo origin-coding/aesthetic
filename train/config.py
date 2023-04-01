@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import BaseModel
 
-from .common import base_path
+from common import base_path
 
 
 class OptimizerConfiguration(str, Enum):
