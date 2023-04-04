@@ -20,5 +20,5 @@ conda install pytorch torchvision torchaudio cpuonly -c pytorch  # Use CPU
 
 conda install scikit-learn, seaborn, pandas jupyter -c conda-forge
 
-pip install pyside6, BeautifulReport, click, pydantic
+pip install pyside6, BeautifulReport, click, pydantic, loguru
 ```
