@@ -1,4 +1,4 @@
-from .config import setup_config
+from .utils import setup_config
 
 
 def train_main(config_filename: str):

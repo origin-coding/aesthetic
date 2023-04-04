@@ -2,8 +2,6 @@ from enum import Enum
 
 from pydantic import BaseModel
 
-from common import base_path
-
 
 class OptimizerConfiguration(str, Enum):
     ADAM = "adam"
@@ -22,7 +20,3 @@ class Configuration(BaseModel):
     optimizer: OptimizerConfiguration = OptimizerConfiguration.ADAM
     channels: int = 1024  # Attention模块的通道数，建议取值为1024或512
     kernel_size: int = 3  # SharedLayer的卷积核大小，建议取值为3、5、7
-
-
-def setup_config(filename: str = "config.json") -> Configuration:
-    return Configuration.parse_file(path=base_path / filename, content_type="json")
