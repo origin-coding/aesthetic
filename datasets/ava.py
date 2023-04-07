@@ -23,6 +23,6 @@ class AVADataset(Dataset):
 
         image = Image.open(data_path / "ava" / f"{items[1]}.jpg")
         input_tensor = self.transform(image)
-        label_tensor = torch.tensor(items[2])
+        label_tensor = torch.tensor(items[2:12])
 
         return input_tensor, label_tensor
