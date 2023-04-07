@@ -1,13 +1,13 @@
 from pathlib import Path
 from typing import Tuple, Mapping
 
+import loguru
 import torch
 from ignite.engine import Engine
 from ignite.handlers import Checkpoint
-from loguru import logger as train_logger, Logger
 from torch.utils.data import random_split, DataLoader
 
-from common import base_path, output_path
+from common import base_path, log_path
 from datasets import MTAestheticDataset
 from .config import Configuration
 
@@ -32,9 +32,12 @@ def setup_data(config: Configuration) -> Tuple[DataLoader, DataLoader, DataLoade
     return train_loader, val_loader, test_loader
 
 
-def setup_train_logging() -> Logger:
-    train_logger.add(output_path / "logs" / "train.log", level="INFO")
-    return train_logger
+def setup_logger(config: Configuration) -> "loguru.Logger":
+    loguru.logger.add(
+        log_path / f"train_optim={config.optimizer}_chan={config.channels}_size={config.kernel_size}.log",
+        level="INFO"
+    )
+    return loguru.logger
 
 
 def log_metrics(engine: Engine, tag: str) -> None:
@@ -43,11 +46,11 @@ def log_metrics(engine: Engine, tag: str) -> None:
 
 
 def resume_from(
-        to_load: Mapping, checkpoint: Path, logger: Logger, strict: bool = True
+        to_load: Mapping, checkpoint: Path, train_logger: "loguru.Logger", strict: bool = True
 ) -> None:
     if not checkpoint.exists():
         raise FileNotFoundError(f"Given {str(checkpoint)} does not exist.")
 
     checkpoint = torch.load(checkpoint, map_location="cpu")
     Checkpoint.load_objects(to_load=to_load, checkpoint=checkpoint, strict=strict)
-    logger.info(f"Successfully resumed from a checkpoint: {checkpoint}.")
+    train_logger.info(f"Successfully resumed from a checkpoint: {checkpoint}.")

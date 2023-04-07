@@ -31,3 +31,5 @@ class TrainData(BaseModel):
 base_path = Path(__file__).parent.parent.resolve()  # 项目根目录，即最顶层的aesthetic
 data_path = base_path / "data"
 output_path = base_path / "outputs"
+checkpoint_path = output_path / "checkpoints"
+log_path = output_path / "logs"
