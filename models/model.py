@@ -14,7 +14,7 @@ class SharedLayer(nn.Module):
         self.feature1 = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=9, kernel_size=kernel_size, padding=kernel_size // 2),
             nn.AdaptiveAvgPool2d(output_size=128),
-            nn.BatchNorm2d(num_features=3),
+            nn.BatchNorm2d(num_features=9),
             nn.ReLU()
         )
 
@@ -71,9 +71,9 @@ class MTAesthetic(nn.Module):
 
     def forward(self, input_tensors: TensorData) -> TensorData:
         # 首先获取输入
-        input_binary = input_tensors.binary
-        input_score = input_tensors.score
-        input_attribute = input_tensors.attribute
+        input_binary = input_tensors["binary"]
+        input_score = input_tensors["score"]
+        input_attribute = input_tensors["attribute"]
 
         # 针对三个子任务分别进行输出
         output_binary = self.shared_layer(input_binary)

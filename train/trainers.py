@@ -11,16 +11,16 @@ from .config import Configuration
 
 
 def prepare_batch(batch: TrainData, device: torch.device, non_blocking: bool = True) -> TrainData:
-    input_tensor = batch.input_tensor
-    label_tensor = batch.label_tensor
+    input_tensor = batch["input_tensor"]
+    label_tensor = batch["label_tensor"]
 
-    input_binary = input_tensor.binary.to(device, non_blocking=non_blocking)
-    input_score = input_tensor.score.to(device, non_blocking=non_blocking)
-    input_attribute = input_tensor.attribute.to(device, non_blocking=non_blocking)
+    input_binary = input_tensor["binary"].to(device, non_blocking=non_blocking)
+    input_score = input_tensor["score"].to(device, non_blocking=non_blocking)
+    input_attribute = input_tensor["attribute"].to(device, non_blocking=non_blocking)
 
-    label_binary = label_tensor.binary.to(device, non_blocking=non_blocking)
-    label_score = label_tensor.score.to(device, non_blocking=non_blocking)
-    label_attribute = label_tensor.attribute.to(device, non_blocking=non_blocking)
+    label_binary = label_tensor["binary"].to(device, non_blocking=non_blocking)
+    label_score = label_tensor["score"].to(device, non_blocking=non_blocking)
+    label_attribute = label_tensor["attribute"].to(device, non_blocking=non_blocking)
 
     return TrainData(
         input_tensor=TensorData(binary=input_binary, score=input_score, attribute=input_attribute),
@@ -41,8 +41,8 @@ def setup_trainer(
         model.train()
 
         batch = prepare_batch(batch, device)
-        input_tensor: TensorData = batch.input_tensor
-        label_tensor: TensorData = batch.label_tensor
+        input_tensor: TensorData = batch["input_tensor"]
+        label_tensor: TensorData = batch["label_tensor"]
 
         with autocast(config.use_amp):
             # 计算输出结果、损失值
@@ -70,8 +70,8 @@ def setup_evaluator(model: MTAesthetic, device: torch.device, config: Configurat
 
         with torch.no_grad():
             batch = prepare_batch(batch, device)
-            input_tensor: TensorData = batch.input_tensor
-            label_tensor: TensorData = batch.label_tensor
+            input_tensor: TensorData = batch["input_tensor"]
+            label_tensor: TensorData = batch["label_tensor"]
 
             with autocast(config.use_amp):
                 output_tensor: TensorData = model(input_tensor)
