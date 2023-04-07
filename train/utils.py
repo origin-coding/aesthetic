@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 from typing import Tuple, Mapping
 
@@ -33,10 +34,18 @@ def setup_data(config: Configuration) -> Tuple[DataLoader, DataLoader, DataLoade
 
 
 def setup_logger(config: Configuration) -> "loguru.Logger":
-    loguru.logger.add(
-        log_path / f"train_optim={config.optimizer}_chan={config.channels}_size={config.kernel_size}.log",
-        level="INFO"
+    logger = loguru.logger
+
+    logger.add(log_path / f"{datetime.today().date()}.log", level="INFO")
+
+    logger.info(f"Begin training at: {datetime.today()}.")
+    logger.info(
+        f"Model info: optimizer: {config.optimizer}, channels: {config.channels}, "
+        f"kernel size: {config.kernel_size}, learning rate: {config.lr}."
     )
+    logger.info(f"Training info: batch size: {config.batch_size}, epoch counts: {config.max_epochs}.")
+    logger.info(f"Using amp: {config.use_amp}.")
+
     return loguru.logger
 
 
