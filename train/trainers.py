@@ -2,18 +2,12 @@ from typing import Union, Optional, Tuple
 
 import torch
 from ignite.engine import Engine, DeterministicEngine
-from ignite.metrics import MeanAbsoluteError
 from torch.cuda.amp import autocast, GradScaler
 from torch.optim import Adam, SGD
 
 from common import TrainData, TensorData
 from models import MTAesthetic, MTLoss
 from .config import Configuration
-
-# TODO 1. Create trainer. 2 Custom metrics, use ignite.metrics.Loss.
-
-
-m = MeanAbsoluteError(output_transform=lambda x: x)
 
 
 def prepare_batch(batch: TrainData, device: torch.device, non_blocking: bool = True) -> TrainData:
