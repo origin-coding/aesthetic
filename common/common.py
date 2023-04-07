@@ -1,29 +1,31 @@
 from pathlib import Path
+from typing import TypedDict
 
-from pydantic import BaseModel as PydanticBaseModel
+from PIL import Image
 from torch import Tensor
 from torchvision import transforms as transforms
 
+
+def convert_to_rgb(image: Image) -> Image:
+    return image.convert("RGB")
+
+
 # 图像预处理，尽量不改变图像的颜色、亮度、方位等特征，最大程度保留图像的美学信息
 image_transforms = transforms.Compose([
+    convert_to_rgb,
     transforms.Resize(512),
     transforms.RandomCrop(256),
     transforms.ToTensor(),
 ])
 
 
-class BaseModel(PydanticBaseModel):
-    class Config:
-        arbitrary_types_allowed = True
-
-
-class TensorData(BaseModel):
+class TensorData(TypedDict):
     binary: Tensor
     attribute: Tensor
     score: Tensor
 
 
-class TrainData(BaseModel):
+class TrainData(TypedDict):
     input_tensor: TensorData
     label_tensor: TensorData
 
