@@ -1,5 +1,5 @@
 from torch import Tensor
-from torch.nn import Module, BCELoss, MultiLabelMarginLoss, SmoothL1Loss
+from torch.nn import Module, BCELoss, MultiLabelMarginLoss, MSELoss
 
 from common import TensorData
 
@@ -9,7 +9,7 @@ class MTLoss(Module):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.loss_fn_bin = BCELoss()
-        self.loss_fn_score = SmoothL1Loss()
+        self.loss_fn_score = MSELoss()
         self.loss_fn_attribute = MultiLabelMarginLoss()
 
     def forward(self, input_tensor: TensorData, label_tensor: TensorData) -> Tensor:
