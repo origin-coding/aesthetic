@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import TypedDict
+from typing import TypedDict, Tuple
 
 from PIL import Image
 from torch import Tensor
@@ -29,6 +29,8 @@ class TrainData(TypedDict):
     input_tensor: TensorData
     label_tensor: TensorData
 
+
+TrainStepOutput = Tuple[TensorData, TensorData]
 
 base_path = Path(__file__).parent.parent.resolve()  # 项目根目录，即最顶层的aesthetic
 data_path = base_path / "data"
