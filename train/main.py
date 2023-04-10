@@ -3,6 +3,7 @@ from typing import Union, Optional
 
 import torch.cuda
 from ignite.engine import Events
+from ignite.handlers import BasicTimeProfiler
 from torch.cuda.amp import GradScaler
 from torch.optim import Adam, SGD
 
@@ -34,6 +35,11 @@ def train_main(config_filename: str):
     train_engine = setup_trainer(model, optimizer, loss_fn, config, device, scaler)
     val_engine = setup_evaluator(model, device, config)
     test_engine = setup_evaluator(model, device, config)
+
+    train_engine.logger = val_engine.logger = test_engine.logger = logger
+
+    time_profiler = BasicTimeProfiler()
+    time_profiler.attach(train_engine)
 
     train_loader, val_loader, test_loader = setup_data(config)
 
