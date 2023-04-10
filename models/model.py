@@ -67,7 +67,8 @@ class MTAesthetic(nn.Module):
             nn.Linear(in_features=channels * 16 * 16, out_features=1024),
             nn.ReLU(),
             nn.Dropout(),
-            nn.Linear(in_features=1024, out_features=11)
+            nn.Linear(in_features=1024, out_features=11),
+            nn.Sigmoid()
         )
 
     def forward(self, input_tensors: TensorData) -> TensorData:
