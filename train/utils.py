@@ -50,8 +50,9 @@ def setup_logger(config: Configuration) -> "loguru.Logger":
 
 
 def log_metrics(engine: Engine, tag: str) -> None:
-    metrics_format = f"{tag}, [{engine.state.epoch}/{engine.state.iteration}]: {engine.state.metrics}"
-    engine.logger.info(metrics_format)
+    logger = engine.logger
+    logger.info(f"{tag}, [{engine.state.epoch}/{engine.state.iteration}].")
+    logger.info(f"Loss: {engine.state.metrics['loss']}.")
 
 
 def resume_from(
