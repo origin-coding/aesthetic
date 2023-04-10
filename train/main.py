@@ -4,19 +4,22 @@ from typing import Union, Optional
 import torch.cuda
 from ignite.engine import Events
 from ignite.handlers import BasicTimeProfiler
+from ignite.metrics.metric import BatchWise
 from torch.cuda.amp import GradScaler
 from torch.optim import Adam, SGD
 
 from models import MTAesthetic, MTLoss
 from .config import Configuration, OptimizerConfiguration
+from .metrics import setup_metrics
 from .trainers import setup_trainer, setup_evaluator
-from .utils import setup_config, setup_logger, setup_data
+from .utils import setup_config, setup_logger, setup_data, log_metrics
 
 
 def train_main(config_filename: str):
     config: Configuration = setup_config(filename=config_filename)
     # 处理使用AMP加速但是CUDA不可用的情况
     config.use_amp = config.use_amp & torch.cuda.is_available()
+    scaler: Optional[GradScaler] = GradScaler() if config.use_amp else None
 
     logger = setup_logger(config)
 
@@ -30,28 +33,34 @@ def train_main(config_filename: str):
         optimizer = SGD(model.parameters(), lr=config.lr)
 
     loss_fn = MTLoss()
-    scaler: Optional[GradScaler] = GradScaler() if config.use_amp else None
 
+    # 创建Engine并添加Metrics、logger和Time Profiler
     train_engine = setup_trainer(model, optimizer, loss_fn, config, device, scaler)
     val_engine = setup_evaluator(model, device, config)
     test_engine = setup_evaluator(model, device, config)
 
-    train_engine.logger = val_engine.logger = test_engine.logger = logger
+    for engine in (train_engine, val_engine, test_engine):
+        engine.logger = logger
+        BasicTimeProfiler().attach(engine)
 
-    time_profiler = BasicTimeProfiler()
-    time_profiler.attach(train_engine)
+        metrics = setup_metrics(device)
+        for key, metric in metrics.items():
+            metric.attach(engine, key, usage=BatchWise())  # 每个Batch都记录
+
+    train_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="train")
+    val_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="val")
+    test_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="test")
 
     train_loader, val_loader, test_loader = setup_data(config)
 
-    @train_engine.on(Events.STARTED)
+    @train_engine.on(Events.STARTED | Events.EPOCH_COMPLETED)
     def _():
         val_engine.run(val_loader, max_epochs=1)
 
-    @train_engine.on(Events.EPOCH_STARTED)
+    @train_engine.on(Events.COMPLETED)
     def _():
-        # test_engine.run()
-        exit(0)
+        test_engine.run(test_loader, max_epochs=1)
 
-    train_engine.run(train_loader, max_epochs=1)
+    train_engine.run(train_loader, max_epochs=config.max_epochs)
 
     logger.info(f"Finish training at: {datetime.today()}.\n")
