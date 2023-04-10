@@ -1,5 +1,5 @@
 from torch import Tensor
-from torch.nn import Module, BCELoss, MultiLabelMarginLoss, MSELoss
+from torch.nn import Module, BCEWithLogitsLoss, MultiLabelMarginLoss, MSELoss
 
 from common import TensorData
 
@@ -8,7 +8,7 @@ class MTLoss(Module):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.loss_fn_bin = BCELoss()
+        self.loss_fn_bin = BCEWithLogitsLoss()
         self.loss_fn_score = MSELoss()
         self.loss_fn_attribute = MultiLabelMarginLoss()
 
