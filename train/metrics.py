@@ -9,7 +9,7 @@ from models import MTLoss
 
 
 def extract_binary(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
-    return output[0]["binary"], output[1]["binary"]
+    return output[0]["binary"].round(), output[1]["binary"]
 
 
 def extract_score(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
@@ -17,7 +17,7 @@ def extract_score(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
 
 
 def extract_attribute(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
-    return output[0]["attribute"], output[1]["attribute"]
+    return output[0]["attribute"].round(), output[1]["attribute"]
 
 
 def setup_metrics(device: torch.device) -> Dict[str, Metric]:
