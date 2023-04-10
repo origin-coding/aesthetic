@@ -1,11 +1,11 @@
-from typing import Union, Optional, Tuple
+from typing import Union, Optional
 
 import torch
-from ignite.engine import Engine, DeterministicEngine
+from ignite.engine import Engine
 from torch.cuda.amp import autocast, GradScaler
 from torch.optim import Adam, SGD
 
-from common import TrainData, TensorData
+from common import TrainData, TensorData, TrainStepOutput
 from models import MTAesthetic, MTLoss
 from .config import Configuration
 
@@ -31,11 +31,11 @@ def prepare_batch(batch: TrainData, device: torch.device, non_blocking: bool = T
 def setup_trainer(
         model: MTAesthetic, optimizer: Union[Adam, SGD], loss_fn: MTLoss, config: Configuration,
         device: torch.device = torch.device("cuda"), scaler: Optional[GradScaler] = None
-) -> Union[Engine, DeterministicEngine]:
+) -> Engine:
     if config.use_amp:
         assert scaler is not None
 
-    def train_step(_: Engine, batch: TrainData) -> Tuple[TensorData, TensorData]:
+    def train_step(_: Engine, batch: TrainData) -> TrainStepOutput:
         # 将模型更改至训练模式
         optimizer.zero_grad()
         model.train()
@@ -65,7 +65,7 @@ def setup_trainer(
 
 
 def setup_evaluator(model: MTAesthetic, device: torch.device, config: Configuration) -> Engine:
-    def evaluate_step(_: Engine, batch: TrainData) -> Tuple[TensorData, TensorData]:
+    def evaluate_step(_: Engine, batch: TrainData) -> TrainStepOutput:
         model.eval()
 
         with torch.no_grad():
