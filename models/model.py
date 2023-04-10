@@ -59,6 +59,7 @@ class MTAesthetic(nn.Module):
             nn.ReLU(),
             nn.Dropout(),
             nn.Linear(in_features=1024, out_features=10),
+            nn.Softmax(dim=1)
         )
 
         self.task_attribute = nn.Sequential(

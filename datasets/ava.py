@@ -23,6 +23,13 @@ class AVADataset(Dataset):
 
         image = Image.open(data_path / "ava" / f"{items[1]}.jpg")
         input_tensor = self.transform(image)
-        label_tensor = torch.tensor(items[2:12])
+
+        # 将打分人数转换为概率分布
+        scores = []
+        count = sum(items[2:12])
+        for i in items[2:12]:
+            scores.append(i / count)
+
+        label_tensor = torch.tensor(scores)
 
         return input_tensor, label_tensor
