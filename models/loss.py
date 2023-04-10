@@ -13,9 +13,10 @@ class MTLoss(Module):
         self.loss_fn_attribute = MultiLabelMarginLoss()
 
     def forward(self, output_tensor: TensorData, label_tensor: TensorData) -> Tensor:
-        loss_bin: Tensor = self.loss_fn_bin(output_tensor["binary"], label_tensor["binary"])
-        loss_score: Tensor = self.loss_fn_score(output_tensor["score"], label_tensor["score"])
-        loss_attribute: Tensor = self.loss_fn_attribute(output_tensor["attribute"], label_tensor["attribute"])
+        loss_bin: Tensor = self.loss_fn_bin(output_tensor["binary"].float(), label_tensor["binary"].float())
+        loss_score: Tensor = self.loss_fn_score(output_tensor["score"].float(), label_tensor["score"].float())
+        loss_attribute: Tensor = self.loss_fn_attribute(output_tensor["attribute"].float(),
+                                                        label_tensor["attribute"].long())
 
         # 这里将三个子任务的损失值相加
         return loss_bin + loss_score + loss_attribute
