@@ -18,7 +18,7 @@ conda install pytorch torchvision torchaudio cpuonly -c pytorch  # Use CPU
 # conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia  # Use CUDA 11.7
 # conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia  # Use CUDA 11.8
 
-conda install scikit-learn, seaborn, pandas jupyter -c conda-forge
+conda install scikit-learn seaborn pandas jupyter -c conda-forge
 
-pip install pyside6, BeautifulReport, click, pydantic, loguru
+pip install pyside6 BeautifulReport click pydantic loguru
 ```
