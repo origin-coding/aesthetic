@@ -52,7 +52,10 @@ def setup_logger(config: Configuration) -> "loguru.Logger":
 def log_metrics(engine: Engine, tag: str) -> None:
     logger = engine.logger
     logger.info(f"{tag}, [{engine.state.epoch}/{engine.state.iteration}].")
-    logger.info(f"Loss: {engine.state.metrics['loss']}.")
+    logger.info(f"Total loss: {engine.state.metrics['loss']}, "
+                f"binary classification accuracy: {engine.state.metrics['bin']}, "
+                f"scoring MSE: {engine.state.metrics['score']}, "
+                f"multi-label classification report: {engine.state.metrics['attribute']['macro avg']}.")
 
 
 def resume_from(
