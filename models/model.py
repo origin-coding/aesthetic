@@ -48,7 +48,8 @@ class MTAesthetic(nn.Module):
             nn.Linear(in_features=channels * 16 * 16, out_features=1024),
             nn.ReLU(),
             nn.Dropout(),
-            nn.Linear(in_features=1024, out_features=1)
+            nn.Linear(in_features=1024, out_features=1),
+            nn.Sigmoid()
         )
 
         self.task_score = nn.Sequential(
@@ -78,6 +79,7 @@ class MTAesthetic(nn.Module):
         # 针对三个子任务分别进行输出
         output_binary = self.shared_layer(input_binary)
         output_binary = self.task_binary(output_binary)
+        output_binary = output_binary.squeeze()
 
         output_score = self.shared_layer(input_score)
         output_score = self.task_score(output_score)
