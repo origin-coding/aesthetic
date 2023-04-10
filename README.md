@@ -17,6 +17,7 @@ conda activate aesthetic
 conda install pytorch torchvision torchaudio cpuonly -c pytorch  # Use CPU
 # conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia  # Use CUDA 11.7
 # conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia  # Use CUDA 11.8
+conda install ignite -c pytorch
 
 conda install scikit-learn seaborn pandas jupyter -c conda-forge
 
