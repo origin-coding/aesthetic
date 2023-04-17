@@ -44,33 +44,47 @@ class MTAesthetic(nn.Module):
         # 三个多任务学习模块
         self.task_binary = nn.Sequential(
             CBAM(channels=channels),
+            nn.AdaptiveAvgPool2d(output_size=1),
             nn.Flatten(),
-            nn.Linear(in_features=channels * 16 * 16, out_features=1024),
             nn.ReLU(),
             nn.Dropout(),
-            nn.Linear(in_features=1024, out_features=1),
+            nn.Linear(in_features=channels * 1 * 1, out_features=1),
             nn.Sigmoid()
         )
 
         self.task_score = nn.Sequential(
             CBAM(channels=channels),
+            nn.AdaptiveAvgPool2d(output_size=1),
             nn.Flatten(),
-            nn.Linear(in_features=channels * 16 * 16, out_features=1024),
             nn.ReLU(),
             nn.Dropout(),
-            nn.Linear(in_features=1024, out_features=10),
+            nn.Linear(in_features=channels * 1 * 1, out_features=10),
             nn.Softmax(dim=1)
         )
 
         self.task_attribute = nn.Sequential(
             CBAM(channels=channels),
+            nn.AdaptiveAvgPool2d(output_size=1),
             nn.Flatten(),
-            nn.Linear(in_features=channels * 16 * 16, out_features=1024),
             nn.ReLU(),
             nn.Dropout(),
-            nn.Linear(in_features=1024, out_features=11),
+            nn.Linear(in_features=channels * 1 * 1, out_features=11),
             nn.Sigmoid()
         )
+
+        for module in self.modules():
+            if isinstance(module, nn.Conv2d):
+                nn.init.kaiming_normal_(module.weight.data)
+                if module.bias is not None:
+                    nn.init.zeros_(module.bias.data)
+
+            if isinstance(module, nn.BatchNorm2d):
+                nn.init.ones_(module.weight.data)
+                nn.init.zeros_(module.bias.data)
+
+            if isinstance(module, nn.Linear):
+                nn.init.normal_(module.weight.data, mean=0, std=0.01)
+                nn.init.zeros_(module.bias.data)
 
     def forward(self, input_tensors: TensorData) -> TensorData:
         # 首先获取输入
