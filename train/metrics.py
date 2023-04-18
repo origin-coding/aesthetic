@@ -11,7 +11,7 @@ from .config import EngineMetrics
 
 
 def extract_binary(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
-    return output[0]["binary"].round().float(), output[1]["binary"].float()
+    return output[0]["binary"].float(), output[1]["binary"].float()
 
 
 def extract_score(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
@@ -19,7 +19,7 @@ def extract_score(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
 
 
 def extract_attribute(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
-    return output[0]["attribute"].round().float(), output[1]["attribute"].long()
+    return output[0]["attribute"].float(), output[1]["attribute"].long()
 
 
 def setup_metrics(device: torch.device) -> EngineMetrics:
