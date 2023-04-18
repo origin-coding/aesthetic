@@ -12,25 +12,75 @@ class SharedLayer(nn.Module):
         super().__init__()
 
         self.feature1 = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=9, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.Conv2d(in_channels=3, out_channels=64, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=64),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=64),
+            nn.ReLU(inplace=True),
+
             nn.AdaptiveAvgPool2d(output_size=128),
-            nn.BatchNorm2d(num_features=9),
-            nn.ReLU()
         )
 
         self.feature2 = nn.Sequential(
-            nn.Conv2d(in_channels=9, out_channels=3, kernel_size=kernel_size, padding=kernel_size // 2),
-            nn.AdaptiveAvgPool2d(output_size=16),
-            nn.BatchNorm2d(num_features=3),
-            nn.ReLU()
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=128),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=128),
+            nn.ReLU(inplace=True),
+
+            nn.AdaptiveAvgPool2d(output_size=64),
         )
 
-        self.channel_extend = nn.Conv2d(in_channels=3, out_channels=channels, kernel_size=1)
+        self.feature3 = nn.Sequential(
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=256),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=256),
+            nn.ReLU(inplace=True),
+
+            nn.AdaptiveAvgPool2d(output_size=32),
+        )
+
+        self.feature4 = nn.Sequential(
+            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=512),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=512),
+            nn.ReLU(inplace=True),
+
+            nn.AdaptiveAvgPool2d(output_size=16),
+        )
+
+        self.feature5 = nn.Sequential(
+            nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=1024),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(in_channels=1024, out_channels=channels, kernel_size=kernel_size, padding=kernel_size // 2),
+            nn.BatchNorm2d(num_features=channels),
+            nn.ReLU(inplace=True),
+
+            nn.AdaptiveAvgPool2d(output_size=8),
+        )
+
+        self.layers = nn.Sequential(
+            self.feature1,
+            self.feature2,
+            self.feature3,
+            self.feature4,
+            self.feature5,
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        out = self.feature1(x)
-        out = self.feature2(out)
-        out = self.channel_extend(out)
+        out = self.layers(x)
         return out
 
 
