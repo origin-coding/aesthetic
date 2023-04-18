@@ -12,7 +12,7 @@ from models import MTAesthetic, MTLoss
 from .config import Configuration, OptimizerConfiguration
 from .metrics import setup_metrics
 from .trainers import setup_trainer, setup_evaluator
-from .utils import setup_config, setup_logger, setup_data, log_metrics, setup_checkpoint
+from .utils import setup_config, setup_logger, setup_data, log_metrics, setup_checkpoint, setup_exp_logging
 
 
 def train_main(config_filename: str):
@@ -49,6 +49,8 @@ def train_main(config_filename: str):
 
     checkpoint = setup_checkpoint(val_engine, {"model": model})
 
+    exp_logger = setup_exp_logging(train_engine, val_engine, optimizer)
+
     train_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="train")
     val_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="val")
     test_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="test")
@@ -65,5 +67,6 @@ def train_main(config_filename: str):
 
     train_engine.run(train_loader, max_epochs=config.max_epochs)
 
+    exp_logger.close()
     logger.info(f"Finish training at: {datetime.today()}, last checkpoint name: {checkpoint.last_checkpoint}.")
     logger.info("\n")

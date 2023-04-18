@@ -2,8 +2,10 @@ from datetime import datetime
 from typing import Tuple
 
 import loguru
+from ignite.contrib.engines.common import setup_tb_logging, TensorboardLogger
 from ignite.engine import Engine, Events
 from ignite.handlers import DiskSaver, Checkpoint, global_step_from_engine
+from torch.optim import Optimizer
 from torch.utils.data import random_split, DataLoader
 
 from common import base_path, log_path, checkpoint_path
@@ -74,3 +76,10 @@ def setup_checkpoint(engine: Engine, to_save: dict) -> Checkpoint:
 
     engine.add_event_handler(Events.EPOCH_COMPLETED(every=1), checkpoint)
     return checkpoint
+
+
+def setup_exp_logging(trainer: Engine, evaluator: Engine, optimizer: Optimizer) -> TensorboardLogger:
+    logger = setup_tb_logging(
+        output_path=log_path, trainer=trainer, evaluators=evaluator, optimizers=optimizer
+    )
+    return logger
