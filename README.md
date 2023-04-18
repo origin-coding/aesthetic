@@ -21,5 +21,5 @@ conda install ignite -c pytorch
 
 conda install scikit-learn seaborn pandas jupyter -c conda-forge
 
-pip install pyside6 BeautifulReport click pydantic loguru tensorboardX
+pip install pyside6 BeautifulReport click pydantic loguru tensorboardX tensorboard
 ```
