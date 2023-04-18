@@ -14,6 +14,10 @@ def extract_binary(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
     return output[0]["binary"].float(), output[1]["binary"].float()
 
 
+def extract_binary_accuracy(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
+    return output[0]["binary"].round().float(), output[1]["binary"].float()
+
+
 def extract_score(output: TrainStepOutput) -> Tuple[Tensor, Tensor]:
     return output[0]["score"].float(), output[1]["score"].float()
 
@@ -28,5 +32,5 @@ def setup_metrics(device: torch.device) -> EngineMetrics:
         "bin_loss": Loss(loss_fn=BCEWithLogitsLoss(), output_transform=extract_binary, device=device),
         "score_loss": Loss(loss_fn=MSELoss(), output_transform=extract_score, device=device),
         "attr_loss": Loss(loss_fn=MultiLabelMarginLoss(), output_transform=extract_attribute, device=device),
-        "bin_acc": Accuracy(output_transform=extract_binary, device=device),
+        "bin_acc": Accuracy(output_transform=extract_binary_accuracy, device=device),
     }
