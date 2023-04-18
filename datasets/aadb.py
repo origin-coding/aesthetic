@@ -23,6 +23,6 @@ class AADBDataset(Dataset):
 
         image = Image.open(data_path / "aadb" / f"{items[0]}")
         input_tensor = self.transform(image)
-        label_tensor = torch.tensor(items[1:])
+        label_tensor = torch.tensor(items[1:], dtype=torch.float)
 
         return input_tensor, label_tensor

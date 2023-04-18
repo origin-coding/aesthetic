@@ -30,6 +30,6 @@ class AVADataset(Dataset):
         for i in items[2:12]:
             scores.append(i / count)
 
-        label_tensor = torch.tensor(scores)
+        label_tensor = torch.tensor(scores, dtype=torch.float)
 
         return input_tensor, label_tensor
