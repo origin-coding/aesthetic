@@ -55,11 +55,11 @@ def log_metrics(engine: Engine, tag: str) -> None:
     state = engine.state
     metrics: EngineMetrics = state.metrics
 
-    logger.info(f"{tag}, [{state.epoch}/{state.iteration % state.epoch_length}].")
+    logger.info(f"Stage: {tag}, epoch: {state.epoch}, iteration: {state.iteration}.")
     logger.info(
-        f"Total loss: {metrics['loss']}, binary loss: {metrics['bin_loss']}, "
-        f"scoring MSE: {metrics['score_loss']}, multi-label loss: {metrics['attr_loss']}, "
-        f"binary classification accuracy: {metrics['bin_acc']}."
+        f"Loss: {metrics['loss']:.3f}, bin_loss: {metrics['bin_loss']:.6f}, "
+        f"score_loss: {metrics['score_loss']:.6f}, attr_loss: {metrics['attr_loss']:.6f}, "
+        f"bin_acc: {metrics['bin_acc']:.3f}."
     )
 
 
