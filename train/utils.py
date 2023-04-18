@@ -80,6 +80,6 @@ def setup_checkpoint(engine: Engine, to_save: dict) -> Checkpoint:
 
 def setup_exp_logging(trainer: Engine, evaluator: Engine, optimizer: Optimizer) -> TensorboardLogger:
     logger = setup_tb_logging(
-        output_path=log_path, trainer=trainer, evaluators=evaluator, optimizers=optimizer
+        output_path=log_path, trainer=trainer, evaluators=evaluator, optimizers=optimizer, log_every_iters=1
     )
     return logger
