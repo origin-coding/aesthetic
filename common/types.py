@@ -1,6 +1,5 @@
-from typing import TypedDict, Tuple, Union, Any
+from typing import TypedDict, Tuple
 
-from ignite.metrics import Metric
 from torch import Tensor
 
 
@@ -16,15 +15,3 @@ class TrainData(TypedDict):
 
 
 TrainStepOutput = Tuple[TensorData, TensorData]
-
-
-class EngineMetrics(TypedDict):
-    loss: Union[Metric, Any]
-
-    # 每个子任务的loss metric和值
-    bin_loss: Union[Metric, Any]
-    score_loss: Union[Metric, Any]
-    attr_loss: Union[Metric, Any]
-
-    # 二分类的准确率
-    bin_acc: Union[Metric, Any]

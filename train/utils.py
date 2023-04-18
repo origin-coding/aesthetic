@@ -2,12 +2,13 @@ from datetime import datetime
 from typing import Tuple
 
 import loguru
-from ignite.engine import Engine
+from ignite.engine import Engine, Events
+from ignite.handlers import DiskSaver, Checkpoint, global_step_from_engine
 from torch.utils.data import random_split, DataLoader
 
-from common import base_path, log_path, EngineMetrics
+from common import base_path, log_path, checkpoint_path
 from datasets import MTAestheticDataset
-from .config import Configuration
+from .config import Configuration, EngineMetrics
 
 
 def setup_config(filename: str = "config.json") -> Configuration:
@@ -58,3 +59,17 @@ def log_metrics(engine: Engine, tag: str) -> None:
         f"scoring MSE: {metrics['score_loss']}, multi-label loss: {metrics['attr_loss']}, "
         f"binary classification accuracy: {metrics['bin_acc']}."
     )
+
+
+def setup_eval_checkpoint(engine: Engine, to_save: dict):
+    saver = DiskSaver(dirname=checkpoint_path, require_empty=False)
+
+    checkpoint = Checkpoint(
+        to_save=to_save,
+        save_handler=saver, n_saved=2,
+        filename_prefix="best",
+        score_name="loss", score_function=Checkpoint.get_default_score_fn("loss", score_sign=-1.0),
+        global_step_transform=global_step_from_engine(engine)
+    )
+
+    engine.add_event_handler(Events.EPOCH_COMPLETED(every=1), checkpoint)

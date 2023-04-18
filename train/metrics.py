@@ -5,7 +5,8 @@ from ignite.metrics import Loss, Accuracy, MeanSquaredError
 from torch import Tensor
 from torch.nn import MultiLabelMarginLoss, BCEWithLogitsLoss
 
-from common import TrainStepOutput, EngineMetrics
+from common import TrainStepOutput
+from .config import EngineMetrics
 from models import MTLoss
 
 
