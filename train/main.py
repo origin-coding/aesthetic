@@ -12,7 +12,7 @@ from models import MTAesthetic, MTLoss
 from .config import Configuration, OptimizerConfiguration
 from .metrics import setup_metrics
 from .trainers import setup_trainer, setup_evaluator
-from .utils import setup_config, setup_logger, setup_data, log_metrics
+from .utils import setup_config, setup_logger, setup_data, log_metrics, setup_checkpoint
 
 
 def train_main(config_filename: str):
@@ -47,6 +47,8 @@ def train_main(config_filename: str):
         for key, metric in metrics.items():
             metric.attach(engine, key, usage=BatchWise())  # 每个Batch都记录
 
+    checkpoint = setup_checkpoint(val_engine, {"model": model})
+
     train_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="train")
     val_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="val")
     test_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="test")
@@ -63,4 +65,5 @@ def train_main(config_filename: str):
 
     train_engine.run(train_loader, max_epochs=config.max_epochs)
 
-    logger.info(f"Finish training at: {datetime.today()}.\n")
+    logger.info(f"Finish training at: {datetime.today()}, last checkpoint name: {checkpoint.last_checkpoint}.")
+    logger.info("\n")

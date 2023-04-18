@@ -61,15 +61,16 @@ def log_metrics(engine: Engine, tag: str) -> None:
     )
 
 
-def setup_eval_checkpoint(engine: Engine, to_save: dict):
+def setup_checkpoint(engine: Engine, to_save: dict) -> Checkpoint:
     saver = DiskSaver(dirname=checkpoint_path, require_empty=False)
 
     checkpoint = Checkpoint(
         to_save=to_save,
-        save_handler=saver, n_saved=2,
+        save_handler=saver, n_saved=3,
         filename_prefix="best",
         score_name="loss", score_function=Checkpoint.get_default_score_fn("loss", score_sign=-1.0),
         global_step_transform=global_step_from_engine(engine)
     )
 
     engine.add_event_handler(Events.EPOCH_COMPLETED(every=1), checkpoint)
+    return checkpoint
