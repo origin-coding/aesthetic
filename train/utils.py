@@ -1,14 +1,11 @@
 from datetime import datetime
-from pathlib import Path
-from typing import Tuple, Mapping
+from typing import Tuple
 
 import loguru
-import torch
 from ignite.engine import Engine
-from ignite.handlers import Checkpoint
 from torch.utils.data import random_split, DataLoader
 
-from common import base_path, log_path
+from common import base_path, log_path, EngineMetrics
 from datasets import MTAestheticDataset
 from .config import Configuration
 
@@ -22,13 +19,13 @@ def setup_data(config: Configuration) -> Tuple[DataLoader, DataLoader, DataLoade
     train_dataset, val_dataset, test_dataset = random_split(dataset, lengths=[6000, 2000, 2000])
 
     # 这里在本地验证时为节省资源，而不设置num_workers
-    # train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True, num_workers=4)
-    # val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=True, num_workers=4)
-    # test_loader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=True, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True, num_workers=20)
+    val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=True, num_workers=20)
+    test_loader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=True, num_workers=20)
 
-    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=True)
+    # train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
+    # val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=True)
+    # test_loader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=True)
 
     return train_loader, val_loader, test_loader
 
@@ -51,19 +48,13 @@ def setup_logger(config: Configuration) -> "loguru.Logger":
 
 def log_metrics(engine: Engine, tag: str) -> None:
     logger = engine.logger
-    logger.info(f"{tag}, [{engine.state.epoch}/{engine.state.iteration}].")
-    logger.info(f"Total loss: {engine.state.metrics['loss']}, "
-                f"binary classification accuracy: {engine.state.metrics['bin']}, "
-                f"scoring MSE: {engine.state.metrics['score']}, "
-                f"multi-label classification report: {engine.state.metrics['attribute']['macro avg']}.")
 
+    state = engine.state
+    metrics: EngineMetrics = state.metrics
 
-def resume_from(
-        to_load: Mapping, checkpoint: Path, train_logger: "loguru.Logger", strict: bool = True
-) -> None:
-    if not checkpoint.exists():
-        raise FileNotFoundError(f"Given {str(checkpoint)} does not exist.")
-
-    checkpoint = torch.load(checkpoint, map_location="cpu")
-    Checkpoint.load_objects(to_load=to_load, checkpoint=checkpoint, strict=strict)
-    train_logger.info(f"Successfully resumed from a checkpoint: {checkpoint}.")
+    logger.info(f"{tag}, [{state.epoch}/{state.iteration % state.epoch_length}].")
+    logger.info(
+        f"Total loss: {metrics['loss']}, binary loss: {metrics['bin_loss']}, "
+        f"scoring MSE: {metrics['score_loss']}, multi-label loss: {metrics['attr_loss']}, "
+        f"binary classification accuracy: {metrics['bin_acc']}."
+    )
