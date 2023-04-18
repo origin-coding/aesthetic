@@ -49,7 +49,7 @@ def train_main(config_filename: str):
 
     checkpoint = setup_checkpoint(val_engine, {"model": model})
 
-    exp_logger = setup_exp_logging(train_engine, val_engine, optimizer)
+    exp_logger = setup_exp_logging(train_engine, val_engine)
 
     train_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="train")
     val_engine.add_event_handler(Events.ITERATION_COMPLETED, log_metrics, tag="val")

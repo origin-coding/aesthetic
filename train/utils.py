@@ -5,7 +5,6 @@ import loguru
 from ignite.contrib.engines.common import setup_tb_logging, TensorboardLogger
 from ignite.engine import Engine, Events
 from ignite.handlers import DiskSaver, Checkpoint, global_step_from_engine
-from torch.optim import Optimizer
 from torch.utils.data import random_split, DataLoader
 
 from common import base_path, log_path, checkpoint_path
@@ -78,8 +77,7 @@ def setup_checkpoint(engine: Engine, to_save: dict) -> Checkpoint:
     return checkpoint
 
 
-def setup_exp_logging(trainer: Engine, evaluator: Engine, optimizer: Optimizer) -> TensorboardLogger:
-    logger = setup_tb_logging(
-        output_path=log_path, trainer=trainer, evaluators=evaluator, optimizers=optimizer, log_every_iters=1
-    )
+def setup_exp_logging(trainer: Engine, evaluator: Engine) -> TensorboardLogger:
+    logger = setup_tb_logging(output_path=log_path, trainer=trainer, evaluators=evaluator, log_every_iters=10)
+
     return logger
