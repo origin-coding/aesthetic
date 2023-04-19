@@ -45,7 +45,7 @@ def train_main(config_filename: str):
         engine.logger = logger
         BasicTimeProfiler().attach(engine)
 
-        metrics = setup_metrics(device)
+        metrics = setup_metrics(device, config)
         for key, metric in metrics.items():
             metric.attach(engine, key, usage=BatchWise())  # 每个Batch都记录
 

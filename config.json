@@ -7,5 +7,5 @@
   "channels": 1024,
   "kernel_size": 3,
   "use_attention": false,
-  "use_dwa": false
+  "use_dwa": true
 }
