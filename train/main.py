@@ -24,7 +24,9 @@ def train_main(config_filename: str):
     logger = setup_logger(config)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = MTAesthetic(channels=config.channels, kernel_size=config.kernel_size).to(device)
+    model = MTAesthetic(
+        channels=config.channels, kernel_size=config.kernel_size, use_attention=config.use_attention
+    ).to(device)
 
     optimizer: Union[Adam, SGD]
     if config.optimizer == OptimizerConfiguration.ADAM:

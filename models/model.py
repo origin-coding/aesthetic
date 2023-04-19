@@ -85,7 +85,7 @@ class SharedLayer(nn.Module):
 
 
 class MTAesthetic(nn.Module):
-    def __init__(self, channels: int, kernel_size: int) -> None:
+    def __init__(self, channels: int, kernel_size: int, use_attention: bool = True) -> None:
         super().__init__()
 
         # 共享参数层，用于学习图像的细节特征
@@ -93,31 +93,25 @@ class MTAesthetic(nn.Module):
 
         # 三个多任务学习模块
         self.task_binary = nn.Sequential(
-            CBAM(channels=channels),
+            CBAM(channels=channels) if use_attention else nn.ReLU(),
             nn.AdaptiveAvgPool2d(output_size=1),
-            nn.Flatten(),
-            nn.ReLU(),
-            nn.Dropout(),
+            nn.Flatten(), nn.ReLU(), nn.Dropout(),
             nn.Linear(in_features=channels * 1 * 1, out_features=1),
             nn.Sigmoid()
         )
 
         self.task_score = nn.Sequential(
-            CBAM(channels=channels),
+            CBAM(channels=channels) if use_attention else nn.ReLU(),
             nn.AdaptiveAvgPool2d(output_size=1),
-            nn.Flatten(),
-            nn.ReLU(),
-            nn.Dropout(),
+            nn.Flatten(), nn.ReLU(), nn.Dropout(),
             nn.Linear(in_features=channels * 1 * 1, out_features=10),
             nn.Softmax(dim=1)
         )
 
         self.task_attribute = nn.Sequential(
-            CBAM(channels=channels),
+            CBAM(channels=channels) if use_attention else nn.ReLU(),
             nn.AdaptiveAvgPool2d(output_size=1),
-            nn.Flatten(),
-            nn.ReLU(),
-            nn.Dropout(),
+            nn.Flatten(), nn.ReLU(), nn.Dropout(),
             nn.Linear(in_features=channels * 1 * 1, out_features=11),
             nn.Sigmoid()
         )

@@ -21,6 +21,7 @@ class Configuration(BaseModel):
     optimizer: OptimizerConfiguration = OptimizerConfiguration.ADAM
     channels: int = 1024  # Attention模块的通道数，建议取值为1024或512
     kernel_size: int = 3  # SharedLayer的卷积核大小，建议取值为3、5、7
+    use_attention: bool = True  # 是否使用Attention，用于模型对比
 
 
 class EngineMetrics(TypedDict):
