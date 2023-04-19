@@ -43,7 +43,7 @@ def setup_logger(config: Configuration) -> "loguru.Logger":
         f"kernel size: {config.kernel_size}, learning rate: {config.lr}."
     )
     logger.info(f"Training info: batch size: {config.batch_size}, epoch counts: {config.max_epochs}.")
-    logger.info(f"Using attention(CBAM): {config.use_attention}.")
+    logger.info(f"Using attention(CBAM): {config.use_attention}, using DWA: {config.use_dwa}.")
     logger.info(f"Using amp: {config.use_amp}.")
 
     return loguru.logger

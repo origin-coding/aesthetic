@@ -5,7 +5,7 @@
   "use_amp": true,
   "optimizer": "adam",
   "channels": 1024,
-  "kernel_size": 5,
-  "use_attention": true,
+  "kernel_size": 3,
+  "use_attention": false,
   "use_dwa": false
 }
