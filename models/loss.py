@@ -48,7 +48,7 @@ class MTDwa(Module):
 
         weights = MTDwa.dynamic_weight_averaging(self.loss_t1, self.loss_t2)
 
-        results = loss_bin * weights[0], loss_score * weights[1], loss_attribute * weights[2]
+        results: losses = loss_bin * weights[0], loss_score * weights[1], loss_attribute * weights[2]
 
         self.loss_t2 = self.loss_t1
         self.loss_t1 = results
