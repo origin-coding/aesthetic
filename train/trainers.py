@@ -6,7 +6,7 @@ from torch.cuda.amp import autocast, GradScaler
 from torch.optim import Adam, SGD
 
 from common import TrainData, TensorData, TrainStepOutput
-from models import MTAesthetic, MTLoss
+from models import MTAesthetic, MTLoss, MTDwa
 from .config import Configuration
 
 
@@ -29,7 +29,7 @@ def prepare_batch(batch: TrainData, device: torch.device, non_blocking: bool = T
 
 
 def setup_trainer(
-        model: MTAesthetic, optimizer: Union[Adam, SGD], loss_fn: MTLoss, config: Configuration,
+        model: MTAesthetic, optimizer: Union[Adam, SGD], loss_fn: Union[MTLoss, MTDwa], config: Configuration,
         device: torch.device = torch.device("cuda"), scaler: Optional[GradScaler] = None
 ) -> Engine:
     if config.use_amp:

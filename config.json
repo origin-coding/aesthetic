@@ -5,6 +5,7 @@
   "use_amp": true,
   "optimizer": "adam",
   "channels": 1024,
-  "shared_layer_kernel_size": 7,
-  "use_attention": true
+  "kernel_size": 5,
+  "use_attention": true,
+  "use_dwa": false
 }

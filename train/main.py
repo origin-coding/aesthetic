@@ -8,7 +8,7 @@ from ignite.metrics.metric import BatchWise
 from torch.cuda.amp import GradScaler
 from torch.optim import Adam, SGD
 
-from models import MTAesthetic, MTLoss
+from models import MTAesthetic, MTLoss, MTDwa
 from .config import Configuration, OptimizerConfiguration
 from .metrics import setup_metrics
 from .trainers import setup_trainer, setup_evaluator
@@ -34,7 +34,7 @@ def train_main(config_filename: str):
     else:
         optimizer = SGD(model.parameters(), lr=config.lr)
 
-    loss_fn = MTLoss()
+    loss_fn: Union[MTLoss, MTDwa] = MTLoss() if not config.use_dwa else MTDwa()
 
     # 创建Engine并添加Metrics、logger和Time Profiler
     train_engine = setup_trainer(model, optimizer, loss_fn, config, device, scaler)
