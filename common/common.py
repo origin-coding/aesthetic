@@ -5,6 +5,11 @@ from torchvision import transforms as transforms
 
 
 def convert_to_rgb(image: Image) -> Image:
+    """
+    将图像转换成tensor，避免因为图像通道小于3而导致模型计算出错
+    :param image: 读取到的图像
+    :return: 转换后的tensor
+    """
     return image.convert("RGB")
 
 

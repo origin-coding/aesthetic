@@ -14,4 +14,4 @@ class TrainData(TypedDict):
     label_tensor: TensorData
 
 
-TrainStepOutput = Tuple[TensorData, TensorData]
+StepOutput = Tuple[TensorData, TensorData]

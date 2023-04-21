@@ -6,11 +6,17 @@ from pydantic import BaseModel
 
 
 class OptimizerConfiguration(str, Enum):
+    """
+    Optimizer的配置项，可选为ADAM或SGD
+    """
     ADAM = "adam"
     SGD = "sgd"
 
 
 class Configuration(BaseModel):
+    """
+    训练时的各种参数
+    """
     batch_size: int = 100
     lr: float = 1e-4
 
@@ -27,6 +33,10 @@ class Configuration(BaseModel):
 
 
 class EngineMetrics(TypedDict):
+    """
+    训练过程中的metrics方法和值，用于类型定义，无特殊含义
+    """
+    # 模型整体的loss
     loss: Union[Metric, Any]
 
     # 每个子任务的loss metric和值
