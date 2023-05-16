@@ -1,7 +1,9 @@
 from datetime import datetime
-from typing import Tuple
+from pathlib import Path
+from typing import Tuple, Union
 
 import loguru
+import torch
 from ignite.contrib.engines.common import setup_tb_logging, TensorboardLogger
 from ignite.engine import Engine, Events
 from ignite.handlers import DiskSaver, Checkpoint, global_step_from_engine
@@ -104,6 +106,23 @@ def setup_checkpoint(engine: Engine, to_save: dict) -> Checkpoint:
 
     engine.add_event_handler(Events.EPOCH_COMPLETED(every=1), checkpoint)
     return checkpoint
+
+
+def resume_from(to_load: dict, checkpoint_fp: Union[str, Path], strict: bool = True) -> None:
+    """
+    用于从Checkpoint中加载模型等对象
+    :param to_load: 需要加载的对象
+    :param checkpoint_fp: checkpoint所在路径
+    :param strict: 是否使用strict模式
+    :return: None
+    """
+    if isinstance(checkpoint_fp, str):
+        checkpoint_fp = Path(checkpoint_fp)
+    if not checkpoint_fp.exists():
+        raise FileNotFoundError(f"Given {str(checkpoint_fp)} does not exist.")
+
+    checkpoint = torch.load(checkpoint_fp, map_location="cpu")
+    Checkpoint.load_objects(to_load, checkpoint=checkpoint, strict=strict)
 
 
 def setup_exp_logging(trainer: Engine, evaluator: Engine) -> TensorboardLogger:
