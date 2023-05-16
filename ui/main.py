@@ -7,7 +7,6 @@ from PySide6.QtQml import QQmlApplicationEngine
 
 
 def ui_main():
-    print(PySide6.__version__)
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
     qml_file = Path(__file__).resolve().parent / "main.qml"
