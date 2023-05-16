@@ -2,7 +2,7 @@ import click
 
 from tests import test_main
 from train import train_main
-# from ui import ui_main
+from ui import ui_main
 
 
 @click.group()
@@ -21,10 +21,10 @@ def test(filename: str, description: str):
     test_main(filename, description)
 
 
-# @main.command()
-# def ui():
-#     """启动应用界面"""
-#     ui_main()
+@main.command()
+def ui():
+    """启动应用界面"""
+    ui_main()
 
 
 @main.command()
