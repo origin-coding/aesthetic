@@ -5,6 +5,7 @@ import torch
 from PIL import Image
 from PySide6.QtCore import QObject, Slot, Signal
 from torch import Tensor
+from torch.nn.functional import softmax
 
 from common import image_transforms, TensorData, AssessResult, new_attribute_result, pretrained_path
 from models import MTAesthetic
@@ -12,13 +13,20 @@ from train import resume_from
 
 
 def process_output(output_tensor: TensorData) -> AssessResult:
-    result_binary: bool = output_tensor["binary"].item() > 0.5
+    """
+    将模型的输出转化成方便传送给QML页面的形式
+    :param output_tensor: 模型的输出
+    :return: 处理好的图像美学评价结果
+    """
+
+    result_binary: bool = output_tensor["binary"].item() > 0.2
 
     scores = torch.tensor([i for i in range(1, 11)], dtype=torch.float)
-    result_score: Tensor = torch.dot(output_tensor["score"].squeeze(0), scores)
+    result_score: Tensor = softmax(output_tensor["score"].squeeze(0), dim=0)
+    result_score: Tensor = torch.dot(result_score, scores)
     result_score: float = round(result_score.item(), 3)
 
-    result_attribute: Tensor = output_tensor["attribute"].squeeze(0) > 0.5
+    result_attribute: Tensor = output_tensor["attribute"].squeeze(0) > 4e-4
     result_attribute: list = result_attribute.tolist()
 
     return AssessResult(
@@ -29,6 +37,14 @@ def process_output(output_tensor: TensorData) -> AssessResult:
 
 
 def load_model(use_attention: bool, kernel_size: int, use_dwa: bool) -> MTAesthetic:
+    """
+    从保留的权重文件中加载预训练的模型，参见config.json文件
+    :param use_attention: 是否使用Attention机制
+    :param kernel_size: 卷积核的大小
+    :param use_dwa: 是否使用DWA机制
+    :return: 加载好的模型
+    """
+
     to_load = {"model": MTAesthetic(channels=1024, kernel_size=kernel_size, use_attention=use_attention)}
     resume_from(to_load, pretrained_path / f"{int(use_attention)}{kernel_size}{int(use_dwa)}.pt")
     return to_load["model"]
@@ -57,6 +73,7 @@ class Context(QObject):
         image_tensor: Tensor = image_transforms(image).unsqueeze(0)
         input_tensor: TensorData = TensorData(binary=image_tensor, attribute=image_tensor, score=image_tensor)
         output_tensor: TensorData = self.model(input_tensor)
+        print(output_tensor["binary"])
 
         # 将输出转换成对应的类型，并传递给页面
         assess_result = process_output(output_tensor)
