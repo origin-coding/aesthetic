@@ -26,4 +26,4 @@ data_path = base_path / "data"
 output_path = base_path / "outputs"
 checkpoint_path = output_path / "checkpoints"
 log_path = output_path / "logs"
-pretrained_path = base_path / "ui" / "pretrained"  # 预训练模型存放目录
+pretrained_path = base_path / "pretrained"  # 预训练模型存放目录
