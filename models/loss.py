@@ -8,7 +8,9 @@ from common import TensorData
 
 
 class MTLoss(Module):
-
+    """
+    MTLoss，即简单地把三个子任务的损失值相加
+    """
     def __init__(self) -> None:
         super().__init__()
         self.loss_fn_bin = BCEWithLogitsLoss()
@@ -30,6 +32,9 @@ losses = Optional[Tuple[Tensor, Tensor, Tensor]]
 
 
 class MTDwa(Module):
+    """
+    在多任务学习中引入动态权重平衡，Dynamic Weight Averaging，来调节各个子任务的学习速率
+    """
     def __init__(self):
         super().__init__()
         self.loss_fn_bin = BCEWithLogitsLoss()

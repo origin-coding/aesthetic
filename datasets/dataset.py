@@ -7,7 +7,9 @@ from .cuhk_pq import cuhk_pq_dataset
 
 
 class MTAestheticDataset(Dataset):
-
+    """
+    三个数据集合并后的数据集
+    """
     def __init__(self) -> None:
         super().__init__()
         self.cuhk_pq = cuhk_pq_dataset

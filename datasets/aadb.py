@@ -9,6 +9,9 @@ from common import data_path, image_transforms
 
 
 class AADBDataset(Dataset):
+    """
+    处理后的AADB数据集
+    """
     def __init__(self) -> None:
         super().__init__()
         self.data = pd.read_csv(data_path / "aadb.csv")

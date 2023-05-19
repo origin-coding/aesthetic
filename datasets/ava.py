@@ -9,6 +9,9 @@ from common import data_path, image_transforms
 
 
 class AVADataset(Dataset):
+    """
+    处理后的AVA数据集
+    """
     def __init__(self) -> None:
         super().__init__()
         self.data = pd.read_csv(data_path / "ava.csv", dtype={"img_id": str, "score": float})

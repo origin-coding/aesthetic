@@ -36,6 +36,10 @@ class SpacialAttention(nn.Module):
 
 
 class CBAM(nn.Module):
+    """
+    CBAM：Convolutional Block Attention Module，https://arxiv.org/pdf/1807.06521
+    在图像处理中使用Attention机制，上面的ChannelAttention和SpecialAttention即是CBAM的两个子模块
+    """
     def __init__(self, channels: int) -> None:
         super().__init__()
         self.channel_attention = ChannelAttention(channels)

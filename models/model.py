@@ -85,6 +85,9 @@ class SharedLayer(nn.Module):
 
 
 class MTAesthetic(nn.Module):
+    """
+    基于MTL和Attention的图像美学质量评价模型
+    """
     def __init__(self, channels: int, kernel_size: int, use_attention: bool = True) -> None:
         super().__init__()
 

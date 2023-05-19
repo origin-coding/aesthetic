@@ -51,6 +51,10 @@ def load_model(use_attention: bool, kernel_size: int, use_dwa: bool) -> MTAesthe
 
 
 class Context(QObject):
+    """
+    QML页面所使用的的上下文，包括必要的信号和槽、应用双向沟通使用的变量和模型的参数等信息
+    """
+
     def __init__(self):
         super().__init__()
         # 设置默认参数：使用attention，kernel size为5，不使用DWA
@@ -62,6 +66,11 @@ class Context(QObject):
 
     @Slot(str)
     def assess_image(self, image_url: str) -> None:
+        """
+        槽函数，当选择一张新的图片时被调用
+        :param image_url: 图像的所在路径
+        :return: None
+        """
         image_path = urlparse(image_url, scheme="file").path.removeprefix("/")
         image_path = Path(image_path).absolute()
 
@@ -80,10 +89,22 @@ class Context(QObject):
         self.send_result(assess_result)
 
     @Slot(bool, int, bool)
-    def change_model(self, use_attention: bool, kernel_size: int, use_dwa: bool):
+    def change_model(self, use_attention: bool, kernel_size: int, use_dwa: bool) -> None:
+        """
+        更换使用的模型，参数同load_model
+        :param use_attention: 是否使用注意力机制
+        :param kernel_size: 卷积核大小
+        :param use_dwa: 是否使用DWA
+        :return: None
+        """
         self.model = load_model(use_attention, kernel_size, use_dwa)
 
-    def send_result(self, assess_result: AssessResult):
+    def send_result(self, assess_result: AssessResult) -> None:
+        """
+        向页面发送图像美学质量评价的结果，调用QML页面中Signal的handler
+        :param assess_result: 评价好的结果
+        :return: None
+        """
         self.setBinary.emit(assess_result["binary"])
         self.setScore.emit(assess_result["score"])
         self.setBalancingElement.emit(assess_result["attribute"]["balancing_element"])
