@@ -15,6 +15,7 @@ ApplicationWindow {
 
     // 默认使用暗色主题
     Material.theme: Material.Dark
+    Material.accent: Material.Pink
 
     // 使用到的属性，统一在这里进行定义
     QtObject {
