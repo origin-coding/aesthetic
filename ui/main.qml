@@ -75,6 +75,11 @@ ApplicationWindow {
                 text: "切换主题"
                 onTriggered: { window.Material.theme = window.Material.theme === Material.Light ? Material.Dark : Material.Light }
             }
+            MenuSeparator {}
+            MenuItem {
+                text: "退出"
+                onTriggered: { Qt.quit() }
+            }
         }
     }
 
@@ -112,6 +117,16 @@ ApplicationWindow {
         }
 
         ColumnLayout {
+            RowLayout {
+                ComboBox {
+                    model: ["1", "2", "3"]
+                    currentIndex: 0
+                    onCurrentIndexChanged: {
+
+                    }
+                }
+            }
+
             RowLayout {
                 Button {
                     text: "选择将要识别的图片"
