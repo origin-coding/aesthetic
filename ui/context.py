@@ -6,8 +6,32 @@ from PIL import Image
 from PySide6.QtCore import QObject, Slot, Signal
 from torch import Tensor
 
-from common import image_transforms, TensorData, AssessResult, new_attribute_result
+from common import image_transforms, TensorData, AssessResult, new_attribute_result, pretrained_path
 from models import MTAesthetic
+from train import resume_from
+
+
+def process_output(output_tensor: TensorData) -> AssessResult:
+    result_binary: bool = output_tensor["binary"].item() > 0.5
+
+    scores = torch.tensor([i for i in range(1, 11)], dtype=torch.float)
+    result_score: Tensor = torch.dot(output_tensor["score"].squeeze(0), scores)
+    result_score: float = round(result_score.item(), 3)
+
+    result_attribute: Tensor = output_tensor["attribute"].squeeze(0) > 0.5
+    result_attribute: list = result_attribute.tolist()
+
+    return AssessResult(
+        binary=result_binary,
+        score=result_score,
+        attribute=new_attribute_result(result_attribute)
+    )
+
+
+def load_model(use_attention: bool, kernel_size: int, use_dwa: bool) -> MTAesthetic:
+    to_load = {"model": MTAesthetic(channels=1024, kernel_size=kernel_size, use_attention=use_attention)}
+    resume_from(to_load, pretrained_path / f"{int(use_attention)}{kernel_size}{int(use_dwa)}.pt")
+    return to_load["model"]
 
 
 class Context(QObject):
@@ -18,7 +42,7 @@ class Context(QObject):
         self.kernel_size = 5
         self.use_dwa = False
         # 加载模型
-        self.model = MTAesthetic(channels=1024, kernel_size=self.kernel_size, use_attention=self.use_attention)
+        self.model = load_model(self.use_attention, self.kernel_size, self.use_dwa)
 
     @Slot(str)
     def assess_image(self, image_url: str) -> None:
@@ -35,7 +59,7 @@ class Context(QObject):
         output_tensor: TensorData = self.model(input_tensor)
 
         # 将输出转换成对应的类型，并传递给页面
-        assess_result = Context.process_output(output_tensor)
+        assess_result = process_output(output_tensor)
         self.send_result(assess_result)
 
     def send_result(self, assess_result: AssessResult):
@@ -52,23 +76,6 @@ class Context(QObject):
         self.setVividColor.emit(assess_result["attribute"]["vivid_color"])
         self.setRepetition.emit(assess_result["attribute"]["repetition"])
         self.setSymmetry.emit(assess_result["attribute"]["symmetry"])
-
-    @staticmethod
-    def process_output(output_tensor: TensorData) -> AssessResult:
-        result_binary: bool = output_tensor["binary"].item() > 0.5
-
-        scores = torch.tensor([i for i in range(1, 11)], dtype=torch.float)
-        result_score: Tensor = torch.dot(output_tensor["score"].squeeze(0), scores)
-        result_score: float = round(result_score.item(), 3)
-
-        result_attribute: Tensor = output_tensor["attribute"].squeeze(0) > 0.5
-        result_attribute: list = result_attribute.tolist()
-
-        return AssessResult(
-            binary=result_binary,
-            score=result_score,
-            attribute=new_attribute_result(result_attribute)
-        )
 
     # Signals
     setBinary = Signal(bool)
