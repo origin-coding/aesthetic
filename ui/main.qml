@@ -118,11 +118,42 @@ ApplicationWindow {
 
         ColumnLayout {
             RowLayout {
+                Label { text: "是否使用Attention：" }
                 ComboBox {
-                    model: ["1", "2", "3"]
+                    id: useAttention
+                    model: [true, false]
                     currentIndex: 0
                     onCurrentIndexChanged: {
+                        if (currentIndex === 1) {
+                            // 如果不使用Attention，那么DWA将被禁用
+                            useDWA.currentIndex = 1
+                            useDWA.enabled = false
+                            context.change_model(useAttention.currentValue, kernelSize.currentValue, useDWA.currentValue)
+                            return
+                        }
 
+                        useDWA.enabled = true
+                        context.change_model(useAttention.currentValue, kernelSize.currentValue, useDWA.currentValue)
+                    }
+                }
+
+                Label { text: "卷积核大小：" }
+                ComboBox {
+                    id: kernelSize
+                    model: [3, 5]
+                    currentIndex: 0
+                    onCurrentIndexChanged: {
+                        context.change_model(useAttention.currentValue, kernelSize.currentValue, useDWA.currentValue)
+                    }
+                }
+
+                Label { text: "是否使用DWA：" }
+                ComboBox {
+                    id: useDWA
+                    model: [true, false]
+                    currentIndex: 0
+                    onCurrentIndexChanged: {
+                        context.change_model(useAttention.currentValue, kernelSize.currentValue, useDWA.currentValue)
                     }
                 }
             }
@@ -139,6 +170,8 @@ ApplicationWindow {
             }
 
             RowLayout {
+                Layout.topMargin: 20
+
                 Item {
                     implicitWidth: userInterface.resultWidth; implicitHeight: userInterface.resultHeight
 

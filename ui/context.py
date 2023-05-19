@@ -39,8 +39,8 @@ class Context(QObject):
         super().__init__()
         # 设置默认参数：使用attention，kernel size为5，不使用DWA
         self.use_attention = True
-        self.kernel_size = 5
-        self.use_dwa = False
+        self.kernel_size = 3
+        self.use_dwa = True
         # 加载模型
         self.model = load_model(self.use_attention, self.kernel_size, self.use_dwa)
 
@@ -61,6 +61,10 @@ class Context(QObject):
         # 将输出转换成对应的类型，并传递给页面
         assess_result = process_output(output_tensor)
         self.send_result(assess_result)
+
+    @Slot(bool, int, bool)
+    def change_model(self, use_attention: bool, kernel_size: int, use_dwa: bool):
+        self.model = load_model(use_attention, kernel_size, use_dwa)
 
     def send_result(self, assess_result: AssessResult):
         self.setBinary.emit(assess_result["binary"])
