@@ -6,3 +6,8 @@
 
 # Data
 data
+
+# Pretrianed models and images used for test
+*.jpg
+*.png
+*.pt
