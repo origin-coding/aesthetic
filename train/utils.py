@@ -32,14 +32,9 @@ def setup_data(config: Configuration) -> Tuple[DataLoader, DataLoader, DataLoade
     dataset = MTAestheticDataset()
     train_dataset, val_dataset, test_dataset = random_split(dataset, lengths=[6000, 2000, 2000])
 
-    # 这里在本地验证时为节省资源，而不设置num_workers
-    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True, num_workers=20)
-    val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=True, num_workers=20)
-    test_loader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=True, num_workers=20)
-
-    # train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
-    # val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=True)
-    # test_loader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True, num_workers=config.num_workers)
+    val_loader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=True, num_workers=config.num_workers)
+    test_loader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=True, num_workers=config.num_workers)
 
     return train_loader, val_loader, test_loader
 

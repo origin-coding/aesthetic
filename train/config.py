@@ -23,6 +23,7 @@ class Configuration(BaseModel):
     max_epochs: int = 30
 
     use_amp: bool  # 是否使用混合精度计算加速模型训练
+    num_workers: int = 4  # 多线程加载数据时使用的线程数
 
     optimizer: OptimizerConfiguration = OptimizerConfiguration.ADAM
     channels: int = 1024  # Attention模块的通道数，建议取值为1024或512
