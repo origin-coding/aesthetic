@@ -39,13 +39,16 @@ def setup_data(config: Configuration) -> Tuple[DataLoader, DataLoader, DataLoade
     return train_loader, val_loader, test_loader
 
 
-def setup_logger(config: Configuration) -> "loguru.Logger":
+def setup_logger(config: Configuration, test: bool = False) -> "loguru.Logger":
     """
     用于加载训练时记录信息的logger，包括基本的参数，训练中的数据、花费时间等，并记录下初始的日志
     :param config: 配置项，用到了绝大多数配置项
+    :param test: 是否在测试环境中，如果是，那么关闭控制台输出
     :return: 配置好的logger
     """
     logger = loguru.logger
+    if test:
+        logger.remove(handler_id=None)
 
     logger.add(log_path / f"{datetime.today().date()}.log", level="INFO")
 

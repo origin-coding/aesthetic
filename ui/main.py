@@ -16,6 +16,7 @@ def ui_main() -> None:
 
     # 创建Qt应用程序，加载QML文件
     app = QGuiApplication(sys.argv)
+    app.setApplicationName("图像美学质量评价系统")
     engine = QQmlApplicationEngine()
     qml_file = Path(__file__).resolve().parent / "main.qml"
     engine.load(qml_file)

@@ -7159,13 +7159,13 @@ body.skin-3 {
 
 
     var resultData = {
-    "testPass": 8,
+    "testPass": 18,
     "testResult": [
         {
             "className": "TestDataset",
             "methodName": "test_aadb_dataset",
-            "description": null,
-            "spendTime": "0.0702 s",
+            "description": "测试AADB数据集能否被正常地加载",
+            "spendTime": "0.102 s",
             "status": "成功",
             "log": [
                 ""
@@ -7173,8 +7173,148 @@ body.skin-3 {
         },
         {
             "className": "TestDataset",
-            "methodName": "test_bin_dataset",
-            "description": null,
+            "methodName": "test_ava_dataset",
+            "description": "测试AVA数据集能否被正常地加载",
+            "spendTime": "0.123 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestDataset",
+            "methodName": "test_cuhk_pq_dataset",
+            "description": "检验CUHK-PQ数据集能否正常地被加载",
+            "spendTime": "0.049 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestDataset",
+            "methodName": "test_mt_aesthetic_dataset",
+            "description": "测试整体数据集能否被正常地加载",
+            "spendTime": "0.152 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestModelOutput",
+            "methodName": "test_cbam_output",
+            "description": "检验CBAM模块能否正确地输出对应格式的数据",
+            "spendTime": "0.394 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestModelOutput",
+            "methodName": "test_channel_attention_output",
+            "description": "检验Channel Attention模块能否正确地输出对应格式的数据",
+            "spendTime": "0.31 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestModelOutput",
+            "methodName": "test_loss_dwa_output",
+            "description": "用于测试损失函数 MTDwa 能否正确地返回结果",
+            "spendTime": "0.000982 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestModelOutput",
+            "methodName": "test_loss_output",
+            "description": "用于测试损失函数 MTLoss 能否正确地返回结果",
+            "spendTime": "0.0 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestModelOutput",
+            "methodName": "test_model_output",
+            "description": "检验模型整体的输入输出格式是否正确",
+            "spendTime": "3.38 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestModelOutput",
+            "methodName": "test_shared_layer_output",
+            "description": "检验参数共享层的输出类型和格式是否正确",
+            "spendTime": "1.25 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestModelOutput",
+            "methodName": "test_spacial_attention_output",
+            "description": "检验Special Attention模块能否正确地输出对应格式的数据",
+            "spendTime": "0.096 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestTrain",
+            "methodName": "test_config",
+            "description": "用于训练配置能否被正常加载",
+            "spendTime": "0.001 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestTrain",
+            "methodName": "test_logger",
+            "description": "测试logger能否正常初始化。",
+            "spendTime": "0.004 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestTrain",
+            "methodName": "test_metrics",
+            "description": "用于测试训练过程中的Metrics是否符合要求",
+            "spendTime": "0.001 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestTrain",
+            "methodName": "test_prepare_batch",
+            "description": "用于测试prepare_batch方法能否正常工作",
+            "spendTime": "0.008 s",
+            "status": "成功",
+            "log": [
+                ""
+            ]
+        },
+        {
+            "className": "TestTrain",
+            "methodName": "test_setup_data",
+            "description": "检验DataLoader能否正常创建和加载",
             "spendTime": "0.035 s",
             "status": "成功",
             "log": [
@@ -7182,60 +7322,20 @@ body.skin-3 {
             ]
         },
         {
-            "className": "TestModelOutputShape",
-            "methodName": "test_benchmark",
-            "description": null,
-            "spendTime": "8.35 s",
+            "className": "TestUI",
+            "methodName": "test_process_output",
+            "description": "用于测试模型的输出能否被正常处理为便于展示的格式",
+            "spendTime": "0.0 s",
             "status": "成功",
             "log": [
                 ""
             ]
         },
         {
-            "className": "TestModelOutputShape",
-            "methodName": "test_cbam_shape",
-            "description": null,
-            "spendTime": "0.402 s",
-            "status": "成功",
-            "log": [
-                ""
-            ]
-        },
-        {
-            "className": "TestModelOutputShape",
-            "methodName": "test_channel_attention_shape",
-            "description": null,
-            "spendTime": "0.334 s",
-            "status": "成功",
-            "log": [
-                ""
-            ]
-        },
-        {
-            "className": "TestModelOutputShape",
-            "methodName": "test_model_shape",
-            "description": null,
-            "spendTime": "8.85 s",
-            "status": "成功",
-            "log": [
-                ""
-            ]
-        },
-        {
-            "className": "TestModelOutputShape",
-            "methodName": "test_shared_layer_shape",
-            "description": null,
-            "spendTime": "0.468 s",
-            "status": "成功",
-            "log": [
-                ""
-            ]
-        },
-        {
-            "className": "TestModelOutputShape",
-            "methodName": "test_spacial_attention_shape",
-            "description": null,
-            "spendTime": "0.091 s",
+            "className": "TestUI",
+            "methodName": "test_qml_initialization",
+            "description": "用于测试QML文件能否正常加载",
+            "spendTime": "0.329 s",
             "status": "成功",
             "log": [
                 ""
@@ -7243,10 +7343,10 @@ body.skin-3 {
         }
     ],
     "testName": "自动测试报告",
-    "testAll": 8,
+    "testAll": 18,
     "testFail": 0,
-    "beginTime": "2023-03-28 20:22:28",
-    "totalTime": "18s",
+    "beginTime": "2023-05-24 21:28:09",
+    "totalTime": "6s",
     "testSkip": 0,
     "testError": 0
 };
