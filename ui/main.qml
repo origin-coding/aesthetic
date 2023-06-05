@@ -22,7 +22,7 @@ ApplicationWindow {
         id: userInterface
 
         // 图像的路径
-        property string imageSource: ""
+        property string imageSource: "./placeholder.png"
 
         // GitHub仓库的地址
         property string repoURL: "https://github.com/QingyeKiyono/aesthetic"
